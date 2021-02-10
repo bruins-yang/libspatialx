@@ -86,7 +86,7 @@ std::string IndexBase::MakeValue(const S2Region* region) {
 
 Status IndexBase::ParseKey(const std::string& key, std::string &id, S2CellId &idx) {
     if (key.size() <= sizeof(uint64_t)) {
-        return Status::kWrongKeyFormat;
+        return Status::kErrBadKeyFormat;
     }
 
     idx = S2CellId(utils::Bytes2Numeric<uint64_t>(reinterpret_cast<const std::byte*>(key.data())));
@@ -96,7 +96,7 @@ Status IndexBase::ParseKey(const std::string& key, std::string &id, S2CellId &id
 
 Status IndexBase::ParseValue(const std::string& value, S2LatLngRect& rect) {
     if (value.size() != kPointValueSize && value.size() != kOtherValueSize) {
-        return Status::kWrongValueFormat;
+        return Status::kErrBadValueFormat;
     }
 
     double lo_lat = utils::Bytes2Numeric<double>(

@@ -10,8 +10,12 @@ namespace spatialx {
 enum Status {
     kOK       = 0,
 
-    kWrongKeyFormat,
-    kWrongValueFormat,
+    kErrBadKeyFormat,
+    kErrBadValueFormat,
+
+    kErrNotFound,
+    kErrRocksReadFailed,
+    kErrRocksWriteFailed,
 };
 
 } // namespace spatialx

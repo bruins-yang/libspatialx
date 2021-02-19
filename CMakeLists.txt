@@ -18,6 +18,8 @@ add_library(libspatialx STATIC
         spatialx/utils.h
         spatialx/rocks_storage.cc
         spatialx/rocks_storage.h
+        spatialx/spatial_query.cc
+        spatialx/spatial_query.h
         )
 
 target_compile_definitions(libspatialx PRIVATE LIBSPATIALX_LIBRARY)

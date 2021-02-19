@@ -15,6 +15,8 @@
 
 namespace spatialx {
 
+class IndexBase;
+using IndexPtr = std::shared_ptr<IndexBase>;
 using StoragePtr = std::shared_ptr<Storage>;
 using QueryRange = std::pair<S2CellId, S2CellId>;
 
@@ -28,6 +30,8 @@ public:
 
     // put a polygon
     virtual Status PutPolygon(const std::string& id, const S2Polygon& polygon);
+
+    StoragePtr storage() {return storage_;}
 
 protected:
     virtual std::vector<S2CellId> MakeCovering(const S2Region* region) = 0;

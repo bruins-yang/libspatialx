@@ -79,14 +79,23 @@ Status RocksStorage::MultiPut(const std::vector<KV> &kvs) {
 }
 
 Status RocksStorage::EqualRange(const std::string &begin, const std::string &end, std::vector<KV> *values) {
-    auto iterator = db_->NewIterator(default_read_opt_, column_family_.get());
-    for (iterator->Seek(begin); iterator->Valid(); iterator->Next()) {
-        if (!iterator->status().ok()) {
-            LOG(ERROR) << "equal range iterator is not ok, error: " << iterator->status().ToString();
-            return Status::kErrRocksReadFailed;
-        }
+    auto opt = rocksdb::ReadOptions();
+    rocksdb::Slice lower_bound = rocksdb::Slice(begin.data(), begin.size());
+    rocksdb::Slice upper_bound = rocksdb::Slice(end.data(), end.size());
+    opt.iterate_lower_bound = &lower_bound;
+    opt.iterate_upper_bound = &upper_bound;
 
+    std::unique_ptr<rocksdb::Iterator> iterator(db_->NewIterator(opt, column_family_.get()));
+    for (iterator->Seek(begin); iterator->Valid(); iterator->Next()) {
+        if (memcmp(iterator->key().data(), end.data(), end.length()) > 0) {
+            break;
+        }
         values->emplace_back(KV{iterator->key().ToString(), iterator->value().ToString()});
+    }
+
+    if (!iterator->status().ok()) {
+        LOG(ERROR) << "equal range iterator is not ok, error: " << iterator->status().ToString();
+        return Status::kErrRocksReadFailed;
     }
 
     return Status::kOK;

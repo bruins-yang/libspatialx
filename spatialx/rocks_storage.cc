@@ -78,7 +78,8 @@ Status RocksStorage::MultiPut(const std::vector<KV> &kvs) {
     return Status::kOK;
 }
 
-Status RocksStorage::EqualRange(const std::string &begin, const std::string &end, std::vector<KV> *values) {
+std::pair<Storage::Iterator, Storage::Iterator>
+        RocksStorage::EqualRange(const std::string &begin, const std::string &end) {
     auto opt = rocksdb::ReadOptions();
     rocksdb::Slice lower_bound = rocksdb::Slice(begin.data(), begin.size());
     rocksdb::Slice upper_bound = rocksdb::Slice(end.data(), end.size());

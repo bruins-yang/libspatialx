@@ -14,6 +14,14 @@ namespace spatialx {
 
 class RocksStorage : public Storage {
 public:
+class Iterator : public Storage::Iterator {
+    // TODO
+
+private:
+    // TODO
+};
+
+public:
     RocksStorage(std::shared_ptr<rocksdb::DB> db, std::shared_ptr<rocksdb::ColumnFamilyHandle> column_family);
 
     Status Get(const std::string& key, std::string *value) override;
@@ -25,7 +33,8 @@ public:
     // storage should promise MultiPut is a transaction.
     Status MultiPut(const std::vector<KV>& kvs) override;
 
-    Status EqualRange(const std::string& begin, const std::string& end, std::vector<KV> *values) override;
+    std::pair<Storage::Iterator, Storage::Iterator>
+    EqualRange(const std::string& begin, const std::string& end) override;
 
     Status Delete(const std::string& key) override;
 
